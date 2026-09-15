@@ -25,6 +25,7 @@ class Expense(models.Model):
         ('emi', 'EMI'),
         ('grocery', 'Grocery'),
         ('clothes', 'Clothes'),
+        ('rent','Rent'),
         ('other', 'Other'),
     ]
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
