@@ -29,8 +29,6 @@ export default function ExpenseForm({onExpenseAdded}) {
         <form onSubmit={handleSubmit}>
             <input name="date" value={formData.date} onChange={handleChange} type="date" />
             <select name="category" value={formData.category} onChange={handleChange}>
-                <option value="debt">Debt</option>
-                <option value="credit_card">Credit Card</option>
                 <option value="emi">EMI</option>
                 <option value="grocery">Grocery</option>
                 <option value="clothes">Clothes</option>
