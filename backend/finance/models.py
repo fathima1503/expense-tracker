@@ -33,6 +33,8 @@ class Expense(models.Model):
     # null=True — allows it to be empty (NULL) in the database
     note = models.TextField(blank=True,null=True) 
     date = models.DateField()
+    debt = models.ForeignKey(Debt, on_delete=models.SET_NULL, null=True, blank=True)
+    credit_card = models.ForeignKey(CreditCard, on_delete=models.SET_NULL, null=True, blank=True)
 
 
 
