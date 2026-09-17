@@ -4,6 +4,8 @@ from rest_framework import generics,status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum
+from datetime import date
 from decimal import Decimal
 from .models import Income,Expense,Debt,CreditCard
 from .serializers import IncomeSerializer,ExpenseSerializer,DebtSerializer,CreditCardSerializer
@@ -59,3 +61,28 @@ class CreditCardPaymentView(APIView):
         
         serializer = CreditCardSerializer(creditCard)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DashboardView(APIView):
+    def get(self, request):
+        today = date.today()
+        current_month = today.month
+        current_year = today.year
+        
+        income_total = Income.objects.filter(
+            month__month=current_month,
+            month__year=current_year
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+        expense_total = Expense.objects.filter(
+            date__month=current_month,
+            date__year=current_year
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+        debt_total = Debt.objects.aggregate(Sum('remaining_amount'))['remaining_amount__sum'] or 0
+        credit_card_total = CreditCard.objects.aggregate(Sum('remaining_amount'))['remaining_amount__sum'] or 0
+        
+        return Response({
+            'remaining_in_hand': income_total - expense_total,
+            'total_debt': debt_total,
+            'total_credit_card': credit_card_total,
+        })

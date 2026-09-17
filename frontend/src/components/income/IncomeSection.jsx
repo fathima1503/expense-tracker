@@ -17,6 +17,7 @@ export default function IncomeSection() {
 
   return (
     <div>
+      <h1>Income</h1>
       <IncomeForm onIncomeAdded={refreshIncomes}/>
       <IncomeList incomes={incomes}/>
       

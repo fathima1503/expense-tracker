@@ -19,6 +19,7 @@ export default function CreditCardSection() {
 
   return (
     <div>
+      <h1>Credit Cards</h1>
       <CreditCardForm onCardAdded={refreshCards}/>
       <CreditCardList cards={card} refreshCards={refreshCards}/>
       

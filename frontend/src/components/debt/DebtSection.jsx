@@ -19,6 +19,7 @@ export default function DebtSection() {
 
   return (
     <div>
+      <h1>Debts</h1>
       <DebtForm onDebtAdded={refreshDebts}/>
       <DebtList debts={debt} refreshDebts={refreshDebts}/>
       
