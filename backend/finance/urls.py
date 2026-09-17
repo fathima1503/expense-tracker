@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import IncomeListCreateView,ExpenseListCreateView,DebtListCreateView,DebtPaymentView,CreditCardListCreateView,CreditCardPaymentView
+from .views import IncomeListCreateView,ExpenseListCreateView,DebtListCreateView,DebtPaymentView,CreditCardListCreateView,CreditCardPaymentView,DashboardView
 
 urlpatterns = [
     path('income/', IncomeListCreateView.as_view(), name='income-list-create'),
@@ -8,6 +8,7 @@ urlpatterns = [
     path('debt/<int:pk>/pay/', DebtPaymentView.as_view(), name='debt-payment'),
     path('creditcard/', CreditCardListCreateView.as_view(), name='creditcard-list-create'),
     path('creditcard/<int:pk>/pay/', CreditCardPaymentView.as_view(), name='creditcard-payment'),
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
 
 ]
 

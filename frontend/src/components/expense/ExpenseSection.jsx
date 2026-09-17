@@ -19,6 +19,7 @@ export default function ExpenseSection() {
 
   return (
     <div>
+      <h1>Expenses</h1>
       <ExpenseForm onExpenseAdded={refreshExpenses}/>
       <ExpenseList expenses={expense}/>
       
