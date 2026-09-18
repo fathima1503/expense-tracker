@@ -11,20 +11,35 @@ from .models import Income,Expense,Debt,CreditCard
 from .serializers import IncomeSerializer,ExpenseSerializer,DebtSerializer,CreditCardSerializer
 
 class IncomeListCreateView(generics.ListCreateAPIView):
-    queryset = Income.objects.all()
     serializer_class = IncomeSerializer
 
+    def get_queryset(self):
+        return Income.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 class ExpenseListCreateView(generics.ListCreateAPIView):
-    queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
 
+    def get_queryset(self):
+        return Expense.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 class DebtListCreateView(generics.ListCreateAPIView):
-    queryset = Debt.objects.all()
     serializer_class = DebtSerializer
+
+    def get_queryset(self):
+        return Debt.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class DebtPaymentView(APIView):
     def post(self, request, pk):
-        debt = get_object_or_404(Debt, pk=pk)
+        debt = get_object_or_404(Debt, pk=pk, user=request.user)
         amount_paid = Decimal(request.data['amount'])
         
         debt.remaining_amount -= amount_paid
@@ -34,19 +49,25 @@ class DebtPaymentView(APIView):
             amount=amount_paid,
             category='debt',
             date=request.data.get('date'),
-            debt=debt
+            debt=debt,
+            user =  request.user
         )
         
         serializer = DebtSerializer(debt)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CreditCardListCreateView(generics.ListCreateAPIView):
-    queryset = CreditCard.objects.all()
     serializer_class = CreditCardSerializer
+
+    def get_queryset(self):
+        return CreditCard.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class CreditCardPaymentView(APIView):
     def post(self, request, pk):
-        creditCard = get_object_or_404(CreditCard, pk=pk)
+        creditCard = get_object_or_404(CreditCard, pk=pk, user = request.user)
         amount_paid = Decimal(request.data['amount'])
         
         creditCard.remaining_amount -= amount_paid
@@ -56,7 +77,8 @@ class CreditCardPaymentView(APIView):
             amount=amount_paid,
             category='credit_card',
             date=request.data.get('date'),
-            credit_card=creditCard
+            credit_card=creditCard,
+            user = request.user
         )
         
         serializer = CreditCardSerializer(creditCard)
@@ -69,17 +91,19 @@ class DashboardView(APIView):
         current_year = today.year
         
         income_total = Income.objects.filter(
+            user=request.user,
             month__month=current_month,
             month__year=current_year
         ).aggregate(Sum('amount'))['amount__sum'] or 0
 
         expense_total = Expense.objects.filter(
+            user=request.user,
             date__month=current_month,
             date__year=current_year
         ).aggregate(Sum('amount'))['amount__sum'] or 0
 
-        debt_total = Debt.objects.aggregate(Sum('remaining_amount'))['remaining_amount__sum'] or 0
-        credit_card_total = CreditCard.objects.aggregate(Sum('remaining_amount'))['remaining_amount__sum'] or 0
+        debt_total = Debt.objects.filter(user=request.user).aggregate(Sum('remaining_amount'))['remaining_amount__sum'] or 0
+        credit_card_total = CreditCard.objects.filter(user=request.user).aggregate(Sum('remaining_amount'))['remaining_amount__sum'] or 0
         
         return Response({
             'remaining_in_hand': income_total - expense_total,
