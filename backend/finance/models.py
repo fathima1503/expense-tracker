@@ -1,23 +1,28 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 class Income(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.CharField(max_length=50)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     month = models.DateField()
 
 class Debt(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     remaining_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
 class CreditCard(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     remaining_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Expense(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     CATEGORY_CHOICES = [
         ('debt', 'Debt'),

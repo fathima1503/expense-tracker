@@ -27,6 +27,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 # Application definition
 
@@ -40,6 +45,7 @@ INSTALLED_APPS = [
     'finance',
     'rest_framework',
     'corsheaders',
+    'rest_framework_simplejwt'
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True  # fine for local dev, restrict this before production
