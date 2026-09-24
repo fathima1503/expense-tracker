@@ -1,15 +1,8 @@
-
-const url = "http://127.0.0.1:8000/api/income/"
+import { apiFetch } from './client';
 
 export async function getIncome() {
     try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        return result;
+        return await apiFetch('/income/');
     } catch (error) {
         console.error(error.message);
         return [];
@@ -18,18 +11,10 @@ export async function getIncome() {
 
 export async function addIncome(data) {
     try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+        const result = await apiFetch('/income/', {
+            method: 'POST',
             body: JSON.stringify(data),
         });
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
-
-        const result = await response.json();
         return result;
     } catch (error) {
         console.error(error.message);
